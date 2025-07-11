@@ -69,11 +69,11 @@ function DraggableEntryForm() {
             <h2>Add Theorem</h2>
             <form action="">
                 <div>
-                    <label>theorem name</label>
+                    <label>theorem name</label><br/>
                     <input name="theoremName" />
                 </div>
                 <div>
-                    <label>dependencies</label>
+                    <label>dependencies</label><br/>
                     <input name="dependency" />
                 </div>
                 <button type="submit">Add</button>
