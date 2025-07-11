@@ -1,5 +1,4 @@
 'use client'
-import Form from 'next/Form';
 import { useState, useEffect } from 'react';
 import { Theorem, mockData } from '../mock';  // test
 
