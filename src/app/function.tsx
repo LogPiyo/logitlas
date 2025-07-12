@@ -1,3 +1,5 @@
+import { Theorem } from './mock';
+
 export function topologicalSort(n: number, graph: number[][]): number[] {
     const indegrees = new Array(n).fill(0);
 
@@ -40,3 +42,22 @@ export function topologicalSort(n: number, graph: number[][]): number[] {
 
     return order;
 }
+
+export function buildOutgoingMap(data: Theorem[]): number[][] {
+    const outgoingMap: number[][] = new Array(data.length).fill(null).map(() => []);
+  
+    for (const item of data) {
+      outgoingMap[item.theoremId] = [];
+    }
+
+    for (const item of data) {
+      for (const dep of item.dependencies) {
+        if (!(dep in outgoingMap)) {
+          outgoingMap[dep] = [];
+        }
+        outgoingMap[dep].push(item.theoremId);
+      }
+    }
+  
+    return outgoingMap;
+  }

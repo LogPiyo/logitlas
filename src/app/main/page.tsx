@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Theorem, mockData } from '../mock';
+import { buildOutgoingMap, topologicalSort } from '../function';
 
 export default function Main() {
   const [positions, setPositions] = useState<{ [key: number]: { x: number; y: number } }>({});
@@ -253,4 +254,11 @@ function Arrow({
             </form>
         </div>
     );
+}
+
+function sortTheorem() {
+    const graph = buildOutgoingMap(mockData);
+    console.log('Graph:', graph);
+    const sortedOrder = topologicalSort(mockData.length, graph);
+    console.log('Topological Sort Order:', sortedOrder);
 }
