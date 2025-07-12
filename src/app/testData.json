@@ -1,0 +1,14 @@
+[
+    { "theoremId": 0, "theoremName": "Axiom A", "dependencies": [] },
+    { "theoremId": 1, "theoremName": "Axiom B", "dependencies": [] },
+    { "theoremId": 2, "theoremName": "Lemma 1", "dependencies": [0] },
+    { "theoremId": 3, "theoremName": "Lemma 2", "dependencies": [1] },
+    { "theoremId": 4, "theoremName": "Lemma 3", "dependencies": [2, 3] },
+    { "theoremId": 5, "theoremName": "Theorem 1", "dependencies": [4] },
+    { "theoremId": 6, "theoremName": "Corollary 1", "dependencies": [5] },
+    { "theoremId": 7, "theoremName": "Lemma 4", "dependencies": [1] },
+    { "theoremId": 8, "theoremName": "Theorem 2", "dependencies": [3, 7] },
+    { "theoremId": 9, "theoremName": "Corollary 2", "dependencies": [6, 8] },
+    { "theoremId": 10, "theoremName": "Final Theorem", "dependencies": [5, 9] }
+  ]
+  
