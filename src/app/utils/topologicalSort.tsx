@@ -1,5 +1,3 @@
-import { Theorem } from '../mock';
-
 export function topologicalSort(n: number, graph: number[][]): number[] {
     const indegrees = new Array(n).fill(0);
 
