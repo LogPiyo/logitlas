@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Theorem, mockData } from '../mock';
+import { mockData } from '../mock';
 import { sortTheorem } from '../utils/topologicalSort';
 import EntryForm from '../components/EntryForm';
 import Element from '../components/Element';
