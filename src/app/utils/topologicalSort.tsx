@@ -1,4 +1,4 @@
-import { Theorem } from './mock';
+import { Theorem } from '../mock';
 
 export function topologicalSort(n: number, graph: number[][]): number[] {
     const indegrees = new Array(n).fill(0);
@@ -61,3 +61,7 @@ export function buildOutgoingMap(data: Theorem[]): number[][] {
   
     return outgoingMap;
   }
+
+export function sortTheorem(mockData: Theorem[]): number[] {
+    return topologicalSort(mockData.length, buildOutgoingMap(mockData));
+}
