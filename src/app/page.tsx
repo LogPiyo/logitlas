@@ -1,7 +1,6 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Link from "next/link";
-import {LAUNCH_YEAR} from "./const";
+import Footer from "./components/Footer";
 
 export default function Home() {
   const currentYear = new Date().getFullYear();
@@ -38,9 +37,7 @@ export default function Home() {
           </a>
         </div>
       </main>
-      <footer className={styles.footer}>
-        <p>&copy; {currentYear === LAUNCH_YEAR ? `${LAUNCH_YEAR}` : `${LAUNCH_YEAR}-${currentYear}`} LogPiyo. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
