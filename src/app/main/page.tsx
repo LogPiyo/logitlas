@@ -5,6 +5,7 @@ import { mockData } from '../mock';
 import { sortTheorem } from '../utils/topologicalSort';
 import EntryForm from '../components/EntryForm';
 import Element from '../components/Element';
+import ResetViewButton from '../components/ResetViewButton';
 
 export default function Main() {
     const [positions, setPositions] = useState<{ [key: number]: { x: number; y: number } }>({});
@@ -60,23 +61,7 @@ export default function Main() {
     return (
         <>
             <EntryForm />
-            <button
-                onClick={handleReset}
-                style={{
-                    position: 'fixed',
-                    top: 10,
-                    left: 10,
-                    zIndex: 3000,
-                    padding: '6px 12px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    backgroundColor: '#fff',
-                    color: '#000',
-                    cursor: 'pointer',
-                }}
-            >
-                Reset View
-            </button>
+            <ResetViewButton onClick={handleReset}/>
             <div
                 onMouseDown={handleMouseDown}
                 onWheel={handleWheel}
