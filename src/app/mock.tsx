@@ -1,4 +1,4 @@
-import testData from './testData.json';
+import testData from '../../public/testdata.json';
 
 export type Theorem = {
     theoremId: number;
