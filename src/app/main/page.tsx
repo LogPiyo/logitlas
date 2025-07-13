@@ -11,114 +11,131 @@ export default function Main() {
     setPositions((prev) => ({ ...prev, [id]: pos }));
   };
 
+  const sortedOrder = sortTheorem(mockData);
+
   return (
     <>
-    <EntryForm />
-    <div>
-      {mockData.map((theorem) => (
-        <Element
-          key={theorem.theoremId}
-          {...theorem}
-          onPositionChange={updatePosition}
-        />
-      ))}
-
-      {mockData.flatMap((theorem) =>
-        theorem.dependencies.map((depId) => {
-          const from = positions[depId];
-          const to = positions[theorem.theoremId];
-          return from && to ? (
-            <Arrow
-              key={`${theorem.theoremId}-${depId}`}
-              from={from}
-              to={to}
+      <EntryForm />
+      <div>
+        {sortedOrder.map((id, index) => {
+          const theorem = mockData.find((t) => t.theoremId === id);
+          if (!theorem) return null;
+  
+          const initialX = 100 + index * 200;
+          const initialY = index % 2 === 0 ? 100 : 250;
+  
+          return (
+            <Element
+              key={theorem.theoremId}
+              {...theorem}
+              initialX={initialX}
+              initialY={initialY}
+              onPositionChange={updatePosition}
             />
-          ) : null;
-        })
-      )}
-    </div>
-  </>
+          );
+        })}
+  
+        {mockData.flatMap((theorem) =>
+          theorem.dependencies.map((depId) => {
+            const from = positions[depId];
+            const to = positions[theorem.theoremId];
+            return from && to ? (
+              <Arrow
+                key={`${theorem.theoremId}-${depId}`}
+                from={from}
+                to={to}
+              />
+            ) : null;
+          })
+        )}
+      </div>
+    </>
   );
 }
 
 function Element({
-  theoremId,
-  theoremName,
-  dependencies,
-  onPositionChange,
-}: {
-  theoremId: number;
-  theoremName: string;
-  dependencies: number[];
-  onPositionChange: (id: number, pos: { x: number; y: number }) => void;
-}) {
-  const [position, setPosition] = useState({ x: 100 + theoremId * 100, y: 100 });
-  const [isDragging, setIsDragging] = useState(false);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition((prev) => {
-          const newPos = { x: prev.x + e.movementX, y: prev.y + e.movementY };
-          onPositionChange(theoremId, getCenter(newPos));
-          return newPos;
-        });
-      }
-    };
-
-    const handleMouseUp = () => setIsDragging(false);
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging]);
-
-  useEffect(() => {
-    onPositionChange(theoremId, getCenter(position));
-  }, [position]);
-
-  const handleMouseDown = () => setIsDragging(true);
-
-  const width = 150;
-  const height = 80;
-
-  const getCenter = (pos: { x: number; y: number }) => ({
-    x: pos.x + width / 2,
-    y: pos.y + height / 2,
-  });
-
-  return (
-    <div
-      id={`element-${theoremId}`}
-      style={{
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
-        width,
-        height,
-        border: '2px solid white',
-        borderRadius: '8px',
-        padding: '8px',
-        backgroundColor: 'black',
-        color: 'white',
-        cursor: 'move',
-        userSelect: 'none',
-        zIndex: 1000,
-      }}
-      onMouseDown={handleMouseDown}
-    >
-      <h3>{theoremName}</h3>
-      <p>
-        {dependencies.length === 0
-          ? 'Axiom'
-          : `Depends on: ${dependencies.join(', ')}`}
-      </p>
-    </div>
-  );
-}
+    theoremId,
+    theoremName,
+    dependencies,
+    onPositionChange,
+    initialX,
+    initialY,
+  }: {
+    theoremId: number;
+    theoremName: string;
+    dependencies: number[];
+    onPositionChange: (id: number, pos: { x: number; y: number }) => void;
+    initialX: number;
+    initialY: number;
+  }) {
+    const [position, setPosition] = useState({ x: initialX, y: initialY });
+    const [isDragging, setIsDragging] = useState(false);
+  
+    useEffect(() => {
+      const handleMouseMove = (e: MouseEvent) => {
+        if (isDragging) {
+          setPosition((prev) => {
+            const newPos = { x: prev.x + e.movementX, y: prev.y + e.movementY };
+            onPositionChange(theoremId, getCenter(newPos));
+            return newPos;
+          });
+        }
+      };
+  
+      const handleMouseUp = () => setIsDragging(false);
+  
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }, [isDragging]);
+  
+    useEffect(() => {
+      onPositionChange(theoremId, getCenter(position));
+    }, [position]);
+  
+    const handleMouseDown = () => setIsDragging(true);
+  
+    const width = 150;
+    const height = 80;
+  
+    const getCenter = (pos: { x: number; y: number }) => ({
+      x: pos.x + width / 2,
+      y: pos.y + height / 2,
+    });
+  
+    return (
+      <div
+        id={`element-${theoremId}`}
+        style={{
+          position: 'absolute',
+          left: position.x,
+          top: position.y,
+          width,
+          height,
+          border: '2px solid white',
+          borderRadius: '8px',
+          padding: '8px',
+          backgroundColor: 'black',
+          color: 'white',
+          cursor: 'move',
+          userSelect: 'none',
+          zIndex: 1000,
+        }}
+        onMouseDown={handleMouseDown}
+      >
+        <h3>{theoremName}</h3>
+        <p>
+          {dependencies.length === 0
+            ? 'Axiom'
+            : `Depends on: ${dependencies.join(', ')}`}
+        </p>
+      </div>
+    );
+  }
+  
 
 function Arrow({
     from,
@@ -256,9 +273,6 @@ function Arrow({
     );
 }
 
-function sortTheorem() {
-    const graph = buildOutgoingMap(mockData);
-    console.log('Graph:', graph);
-    const sortedOrder = topologicalSort(mockData.length, graph);
-    console.log('Topological Sort Order:', sortedOrder);
+function sortTheorem(mockData: Theorem[]): number[] {
+    return topologicalSort(mockData.length, buildOutgoingMap(mockData));
 }
