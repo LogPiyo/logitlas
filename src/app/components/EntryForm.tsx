@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function EntryForm() {
+export default function EntryForm({ onAdd }) {
     const [position, setPosition] = useState({ x: 0, y: 100 });
     const [isDragging, setIsDragging] = useState(false);
   
@@ -53,6 +53,8 @@ export default function EntryForm() {
           alert('Theorem added successfully!');
           setTheoremName('');
           setDependency('');
+          onAdd(prev => !prev);
+          console.log('Theorem added successfully');
         } else {
           alert('Failed to add theorem');
         }

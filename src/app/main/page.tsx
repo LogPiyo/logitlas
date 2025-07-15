@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { mockData } from '../mock';
 import { sortTheorem } from '../utils/topologicalSort';
 import EntryForm from '../components/EntryForm';
 import Element from '../components/Element';
@@ -13,6 +12,10 @@ export default function Main() {
     const [scale, setScale] = useState(1);
     const [isPanning, setIsPanning] = useState(false);
     const [startMouse, setStartMouse] = useState({ x: 0, y: 0 });
+    const [add, setAdd] = useState(false);
+    const [theorems, setTheorems] = useState<Theorem[]>([]);
+
+    const jsonFilePath = '/testData.json';
 
     const updatePosition = (id: number, pos: { x: number; y: number }) => {
         setPositions((prev) => ({ ...prev, [id]: pos }));
@@ -56,11 +59,41 @@ export default function Main() {
         };
     }, [isPanning, startMouse]);
 
-    const sortedOrder = sortTheorem(mockData);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(jsonFilePath, { cache: 'no-cache' });
+                const data = await response.json();
+                setTheorems(data);
+
+                setPositions((prev) => {
+                const updated = { ...prev };
+                data.forEach((t: Theorem, index: number) => {
+                    if (!(t.theoremId in updated)) {
+                    updated[t.theoremId] = {
+                        x: 100 + index * 200,
+                        y: index % 2 === 0 ? 100 : 250,
+                    };
+                    }
+                });
+                return updated;
+                });
+            } catch (error) {
+                console.error('Error fetching JSON file:', error);
+            }
+        };
+
+        fetchData();
+        console.log('Data fetched from:', jsonFilePath);
+        const interval = setInterval(fetchData, 1000);
+        return () => clearInterval(interval);
+    }, [add]);
+
+    const sortedOrder = sortTheorem(theorems);
 
     return (
         <>
-            <EntryForm />
+            <EntryForm onAdd={() => setAdd(prev => !prev)}/>
             <ResetViewButton onClick={handleReset}/>
             <div
                 onMouseDown={handleMouseDown}
@@ -84,7 +117,7 @@ export default function Main() {
                     }}
                 >
                     {sortedOrder.map((id, index) => {
-                        const theorem = mockData.find((t) => t.theoremId === id);
+                        const theorem = theorems.find((t) => t.theoremId === id);
                         if (!theorem) return null;
 
                         const initialX = 100 + index * 200;
@@ -114,7 +147,7 @@ export default function Main() {
                                 <polygon points="0 0, 10 3.5, 0 7" fill="green" />
                             </marker>
                         </defs>
-                        {mockData.flatMap((theorem) =>
+                        {theorems.flatMap((theorem) =>
                             theorem.dependencies.map((depId) => {
                                 const from = positions[depId];
                                 const to = positions[theorem.theoremId];
